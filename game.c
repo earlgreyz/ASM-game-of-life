@@ -4,6 +4,8 @@
 #define DEAD_CELL  ' '
 #define ALIVE_CELL '*'
 
+#define map_get(x, y) (map + width * (y) + (x))
+
 typedef int cell_t;
 
 size_t width, height;
@@ -38,9 +40,9 @@ void initialize_map(size_t width, size_t height) {
     for (size_t x = 0; x < width; x++) {
       // If we're on the first/last row/column set the guardians
       if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
-        *(map + width * y + x) = 0;
+        *map_get(x, y) = 0;
       } else {
-        scanf("%d", map + width * y + x);
+        scanf("%d", map_get(x, y));
       }
     }
   }
@@ -62,7 +64,7 @@ char get_representation(cell_t cell) {
 void print_map(void) {
   for (size_t y = 1; y <= height; y++) {
     for (size_t x = 1; x <= width; x++) {
-      printf("%c", get_representation(*(map + width * y + x)));
+      printf("%c", get_representation(*map_get(x, y)));
     }
     printf("\n");
   }
