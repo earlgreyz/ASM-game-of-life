@@ -1,5 +1,5 @@
 maximum: game.c game.o
-	gcc -o -Wall -O2 game game.c game.o
+	gcc -o game -Wall -O2 game.c game.o
 
 .SECONDARY:
 %.o: %.asm
@@ -9,4 +9,4 @@ maximum: game.c game.o
 	ld $< -o $@ -lc --dynamic-linker=/lib64/ld-linux-x86-64.so.2
 
 clean:
-	rm -f *.o
+	rm -f *.o game
