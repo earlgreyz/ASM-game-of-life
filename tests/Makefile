@@ -1,5 +1,3 @@
-all: clean test_map_get
-
 test_map_get: test_map_get.c game.o
 	gcc -o test_map_get -O0 test_map_get.c game.o
 

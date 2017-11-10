@@ -1,6 +1,9 @@
 global start
 global run
 
+;; Functions exported for tests
+global _map_get
+
 section .bss
   width:  resd 1  ; size_t width
   height: resd 1  ; size_t height
@@ -9,23 +12,23 @@ section .bss
 section .text
 
 start:
-  mov [width], ecx  ; first argument
-  mov [height], edx ; second argument
-  mov [map], r8     ; third argument
+  mov [width], edi  ; first argument
+  mov [height], esi ; second argument
+  mov [map], rdx    ; third argument
   ret
 
 ;; Gets the pointer to the requested map cell.
-;; @param x (ecx)
-;; @param y (edx)
+;; @param x (rdi)
+;; @param y (rsi)
 ;; @returns pointer to map[x][y] in RAX
 _map_get:
   ;; offset = width * y + x
-  mov eax, [width]
-  mul rax, edx
-  add rax, ecx
+  mov eax, [width] ; offset = width
+  mul rsi          ; offset *= y
+  add rax, rdi     ; offset += x
   ;; cell_ptr = map + 4 * offset
-  mov rdx, [map]
-  lea rax, [rdx + 4 * rax]
+  mov rdi, [map]
+  lea rax, [rdi + 4 * rax]
   ret
 
 ;; Counts the number of alive cell neighbours
