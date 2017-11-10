@@ -2,8 +2,10 @@
 #include <assert.h>
 #include "game_private.h"
 
-size_t width = 4, height = 4;
-cell_t map[16] = {
+#define width 4
+#define height 4
+
+cell_t map[(width * height)] = {
   0, 0, 0, 0,
   0, 1, 0, 0,
   0, 1, 1, 0,
@@ -32,8 +34,6 @@ void test_values(void) {
   assert(*map_get(1, 2) == 1);
   printf("OK.\n");
 }
-
-
 
 int main() {
   start(width, height, map);
