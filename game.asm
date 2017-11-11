@@ -9,6 +9,44 @@ global _prepare_neighbours_map
 CELL_SIZE  equ 4    ; Number of bytes in one cell_t
 STATE_MASK equ 0x01 ; Bitmask to get cell state
 
+;; Extracts cell state from the cell.
+;; @param destination: register
+;; @param cell_value
+%macro cell_state 2
+  mov %1, %2
+  and %1, STATE_MASK
+%endmacro
+
+;; Create cell.
+;; @param destination/neighbours
+;; @param state
+%macro make_cell 2
+  shl %1, 8
+  add %1, %2
+%endmacro
+
+;; Checks loop condition.
+;; @param counter: register
+;; @param value: value to check condition on
+;; @param label: label begining of the loop
+%macro check_loop 3
+  dec %1
+  cmp %1, %2
+  jge %3
+%endmacro
+
+;; Wraps function _map_get
+%macro map_get 2
+  mov edi, %1
+  mov esi, %2
+%endmacro
+
+;; Wraps function _count_neighbours
+%macro count_neighbours 2
+  mov edi, %1
+  mov esi %2
+%endmacro
+
 section .bss
   width:  resd 1    ; size_t width
   height: resd 1    ; size_t height
@@ -41,16 +79,16 @@ _map_get:
 ;; @param y (rsi)
 ;; @returns void
 _count_neighbours:
-  xor ebx, ebx    ; Set neighbours_count = 0
   mov r8d, edi    ; Save original x
   mov r9d, esi    ; Save original y
-  call _map_get   ; _map_get(x, y)
-  ;; We're not skipping the (x, y) cell in a loop
-  sub ebx, [rax] ; We need to subtract it's value from the counter
-  ;; Start the loops
-  mov r11d, -1    ; Initialize y_counter
+  xor ecx, ecx    ; Set neighbours_count = 0
+  call _map_get   ; current_cell = _map_get(x, y)
+  cell_state edx, [rax]
+  sub ecx, edx    ; neighbours_count -= state(*current_cell)
+  ;; Loops
+  mov r11d, 1     ; y_counter = 1
 _count_loop_y:
-  mov r10d, -1    ; Initialize x_counter
+  mov r10d, 1     ; x_counter = 1
 _count_loop_x:
   ;; cell_ptr = _map_get(x + x_couter, y + y_counter)
   mov edi, r8d
@@ -58,24 +96,14 @@ _count_loop_x:
   mov esi, r9d
   add esi, r11d
   call _map_get
-  ;; if (*cell_ptr == 0) end loop
-  mov ecx, [rax]
-  and ecx, STATE_MASK
-  jecxz _count_loop_end
-  ;; else increase alive neighbours count
-  inc rbx
+  ;; neighbours_count += state(*cell_ptr)
+  cell_state edx, [rax]
+  add ecx, edx
 _count_loop_end:
-  ;; Check x loop
-  inc r10d
-  cmp r10d, 1
-  jle _count_loop_x
-  ;; Check y loop
-  inc r11d
-  cmp r11d, 1
-  jle _count_loop_y
-  ;; Return
+  check_loop r10d, -1, _count_loop_x
+  check_loop r11d, -1, _count_loop_y
 _count_neighbours_end:
-  mov eax, ebx
+  mov eax, ecx
   ret
 
 ;; Calculate neighbours count for all cells on the map
