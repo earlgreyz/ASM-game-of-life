@@ -5,10 +5,13 @@ global run
 global _map_get
 global _count_neighbours
 
+CELL_SIZE  equ 4    ; Number of bytes in one cell_t
+STATE_MASK equ 0x01 ; Bitmask to get cell state
+
 section .bss
-  width:  resd 1  ; size_t width
-  height: resd 1  ; size_t height
-  map:    resq 1  ; cell_t *map
+  width:  resd 1    ; size_t width
+  height: resd 1    ; size_t height
+  map:    resq 1    ; cell_t *map
 
 section .text
 
@@ -29,7 +32,7 @@ _map_get:
   add rax, rdi     ; offset += x
   ;; cell_ptr = map + 4 * offset
   mov rdi, [map]
-  lea rax, [rdi + 4 * rax]
+  lea rax, [rdi + CELL_SIZE * rax]
   ret
 
 ;; Counts the number of alive cell neighbours
@@ -37,15 +40,13 @@ _map_get:
 ;; @param y (rsi)
 ;; @returns void
 _count_neighbours:
+  xor ebx, ebx    ; Set neighbours_count = 0
   mov r8d, edi    ; Save original x
   mov r9d, esi    ; Save original y
   call _map_get   ; _map_get(x, y)
-  mov r15, rax    ; Save address of map[x][y]
-  xor r14d, r14d  ; Set neighbours = 0
-  ;; We're not skipping the cell in a loop, so if it's active it would be added
-  sub r14d, [r15] ; We need to subtract it's value from the counter
-
-  ;; Start loops
+  ;; We're not skipping the (x, y) cell in a loop
+  sub ebx, [rax] ; We need to subtract it's value from the counter
+  ;; Start the loops
   mov r11d, -1    ; Initialize y_counter
 _count_loop_y:
   mov r10d, -1    ; Initialize x_counter
@@ -60,7 +61,7 @@ _count_loop_x:
   mov ecx, [rax]
   jecxz _count_loop_end
   ;; else increase alive neighbours count
-  inc r14d
+  inc rbx
 _count_loop_end:
   ;; Check x loop
   inc r10d
@@ -72,7 +73,7 @@ _count_loop_end:
   jle _count_loop_y
   ;; Return
 _count_neighbours_end:
-  mov eax, r14d
+  mov eax, ebx
   ret
 
 run:
