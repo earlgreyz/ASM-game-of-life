@@ -3,10 +3,8 @@
 
 #include "../game.h"
 
-/// Exported only for tests.
 extern cell_t *_map_get(size_t x, size_t y);
-
-/// Exported only for tests.
 extern size_t _count_neighbours(size_t x, size_t y);
+extern void _prepare_neighbours_map(void);
 
 #endif

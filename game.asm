@@ -4,6 +4,7 @@ global run
 ;; Functions exported for tests
 global _map_get
 global _count_neighbours
+global _prepare_neighbours_map
 
 CELL_SIZE  equ 4    ; Number of bytes in one cell_t
 STATE_MASK equ 0x01 ; Bitmask to get cell state
@@ -59,6 +60,7 @@ _count_loop_x:
   call _map_get
   ;; if (*cell_ptr == 0) end loop
   mov ecx, [rax]
+  and ecx, STATE_MASK
   jecxz _count_loop_end
   ;; else increase alive neighbours count
   inc rbx
@@ -76,5 +78,39 @@ _count_neighbours_end:
   mov eax, ebx
   ret
 
+;; Calculate neighbours count for all cells on the map
+_prepare_neighbours_map:
+  mov r13d, [height]    ; Initialize y
+  dec r13d              ; y = height - 1
+_prepare_loop_y:
+  mov r12d, [width]     ; Initialize x
+  dec r12d              ; x = width - 1
+_prepare_loop_x:
+  ;; neighbours_count = _count_neighbours(x, y)
+  mov edi, r12d
+  mov esi, r13d
+  call _count_neighbours
+  ;; Last byte is reserved for cell state
+  mov ebx, eax
+  shl ebx, 8            ; neighbours_count << 8
+  ;; cell_ptr = _map_get(x, y)
+  mov edi, r12d
+  mov esi, r13d
+  call _map_get
+  ;; state = (*cell_ptr) | 0x01
+  mov edi, [rax]
+  and edi, STATE_MASK
+  add ebx, edi          ; new_cell.state = cell.state
+  mov [rax], ebx        ; *cell_ptr = new_cell
+_prepare_loop_end:
+  dec r12d              ; x--
+  cmp r12d, 1           ; if (x >= 1) loop_x
+  jge _prepare_loop_x
+  dec r13d              ; y--
+  cmp r13d, 1           ; if (y >= 1) loop_y
+  jge _prepare_loop_y
+  ret
+
 run:
+  call _prepare_neighbours_map
   ret
