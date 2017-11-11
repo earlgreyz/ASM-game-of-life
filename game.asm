@@ -39,12 +39,14 @@ STATE_MASK equ 0x01 ; Bitmask to get cell state
 %macro map_get 2
   mov edi, %1
   mov esi, %2
+  call _map_get
 %endmacro
 
 ;; Wraps function _count_neighbours
 %macro count_neighbours 2
   mov edi, %1
-  mov esi %2
+  mov esi, %2
+  call _count_neighbours
 %endmacro
 
 section .bss
@@ -108,6 +110,10 @@ _count_neighbours_end:
 
 ;; Calculate neighbours count for all cells on the map
 _prepare_neighbours_map:
+  ;; Save the callee save registers
+  push r13
+  push r12
+  ;; Prepare neighbours map
   mov r13d, [height]    ; Initialize y
   dec r13d              ; y = height - 1
 _prepare_loop_y:
@@ -115,28 +121,18 @@ _prepare_loop_y:
   dec r12d              ; x = width - 1
 _prepare_loop_x:
   ;; neighbours_count = _count_neighbours(x, y)
-  mov edi, r12d
-  mov esi, r13d
-  call _count_neighbours
-  ;; Last byte is reserved for cell state
-  mov ebx, eax
-  shl ebx, 8            ; neighbours_count << 8
-  ;; cell_ptr = _map_get(x, y)
-  mov edi, r12d
-  mov esi, r13d
-  call _map_get
-  ;; state = (*cell_ptr) | 0x01
-  mov edi, [rax]
-  and edi, STATE_MASK
-  add ebx, edi          ; new_cell.state = cell.state
-  mov [rax], ebx        ; *cell_ptr = new_cell
+  count_neighbours r12d, r13d
+  mov ecx, eax
+  map_get r12d, r13d     ; cell_ptr = map_get(x, y)
+  cell_state edx, [rax]  ; state = cell_state(*cell_ptr)
+  make_cell ecx, edx     ; new_cell = make_cell(neighbours_count, state)
+  mov [rax], ecx         ; *cell_ptr = new_cell
 _prepare_loop_end:
-  dec r12d              ; x--
-  cmp r12d, 1           ; if (x >= 1) loop_x
-  jge _prepare_loop_x
-  dec r13d              ; y--
-  cmp r13d, 1           ; if (y >= 1) loop_y
-  jge _prepare_loop_y
+  check_loop r12d, 1, _prepare_loop_x
+  check_loop r13d, 1, _prepare_loop_y
+  ;; Restore callee save registers
+  pop r12
+  pop r13
   ret
 
 run:
