@@ -5,9 +5,11 @@ global run
 global _map_get
 global _count_neighbours
 global _prepare_neighbours_map
+global _apply_neighbours_map
 
 CELL_SIZE  equ 4    ; Number of bytes in one cell_t
 STATE_MASK equ 0x01 ; Bitmask to get cell state
+ALIVE_COND equ 3    ; Neighbours required for cell to stay alive
 
 ;; Extracts cell state from the cell.
 ;; @param destination: register
@@ -15,6 +17,12 @@ STATE_MASK equ 0x01 ; Bitmask to get cell state
 %macro cell_state 2
   mov %1, %2
   and %1, STATE_MASK
+%endmacro
+
+;; Extracts cell neighbours from the cell.
+;; @param cell/destination: register
+%macro cell_neighbours 1
+  shr %1, 8
 %endmacro
 
 ;; Create cell.
@@ -135,6 +143,31 @@ _prepare_loop_end:
   pop r13
   ret
 
+;; Apply cell state based on its neighbours count, such that:
+;; * cells with exactly ALIVE_COND neighbours become/remain ALIVE
+;; * all other cells become DEAD
+_apply_neighbours_map:
+  mov r9d, [height]    ; Initialize y
+  dec r9d              ; y = height - 1
+_apply_loop_y:
+  mov r8d, [width]     ; Initialize x
+  dec r8d              ; x = width - 1
+_apply_loop_x:
+  map_get r8d, r9d     ; cell_ptr = map_get(x, y)
+  mov ecx, [rax]       ; cell = *cell_ptr
+  cell_neighbours ecx  ; neighbours_count = cell_neighbours(cell)
+  xor edx, edx         ; new_state = DEAD
+  cmp ecx, ALIVE_COND  ; if (neighbours_count != ALIVE_COND)
+  jne _apply_set_state
+  mov edx, 1           ; new_state = ALIVE
+_apply_set_state:
+  mov [rax], edx       ; *cell_ptr = new_state
+_apply_loop_end:
+  check_loop r8d, 1, _apply_loop_x
+  check_loop r9d, 1, _apply_loop_y
+  ret
+
 run:
   call _prepare_neighbours_map
+  call _apply_neighbours_map
   ret

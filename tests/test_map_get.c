@@ -18,8 +18,8 @@ cell_t *map_get(size_t x, size_t y) {
 
 void test_pointers(void) {
   printf("Testing pointers... ");
-  for (size_t y = 0; y < height; y++) {
-    for (size_t x = 0; x < width; x++) {
+  for (size_t y = 1; y < height - 1; y++) {
+    for (size_t x = 1; x < width - 1; x++) {
       assert(map_get(x, y) == _map_get(x, y));
     }
   }
