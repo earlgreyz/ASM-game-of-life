@@ -154,20 +154,27 @@ _apply_loop_y:
   dec r8d              ; x = width - 1
 _apply_loop_x:
   map_get r8d, r9d     ; cell_ptr = map_get(x, y)
-  mov ecx, [rax]       ; cell = *cell_ptr
-  cell_neighbours ecx  ; neighbours_count = cell_neighbours(cell)
-  xor edx, edx         ; new_state = DEAD
-  cmp ecx, ALIVE_COND  ; if (neighbours_count != ALIVE_COND)
+  mov edi, [rax]       ; cell = *cell_ptr
+  cell_neighbours edi  ; neighbours_count = cell_neighbours(cell)
+  xor esi, esi         ; new_state = DEAD
+  cmp edi, ALIVE_COND  ; if (neighbours_count != ALIVE_COND)
   jne _apply_set_state
-  mov edx, 1           ; new_state = ALIVE
+  mov esi, 1           ; new_state = ALIVE
 _apply_set_state:
-  mov [rax], edx       ; *cell_ptr = new_state
+  mov [rax], esi       ; *cell_ptr = new_state
 _apply_loop_end:
   check_loop r8d, 1, _apply_loop_x
   check_loop r9d, 1, _apply_loop_y
   ret
 
+;; Runs the simulation on the previously prepared map.
+;; @param steps number of times to run the simulation for.
 run:
+  mov ecx, edi
+  jecxz _run_end
+_run_loop:
   call _prepare_neighbours_map
   call _apply_neighbours_map
+  loop _run_loop
+_run_end:
   ret

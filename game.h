@@ -13,7 +13,7 @@ extern void start(size_t width, size_t height, cell_t *map);
 
 /**
  * Runs the simulation on the previously prepared map.
- * @param steps numer of steps to run the simulation for.
+ * @param steps numer of times to run the simulation for.
  **/
 extern void run(int steps);
 
