@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <assert.h>
+#include "unit_tests.h"
 #include "game_private.h"
 
 #define width 6
 #define height 6
 
-#define map_get(map, x, y) (map + width * (y) + (x))
+static cell_t map[(width * height)];
 
-cell_t map[(width * height)];
-
-cell_t map0[(width * height)] = {
+static cell_t map0[(width * height)] = {
   0, 0, 0, 0, 0, 0,
   0, 1, 1, 1, 1, 0,
   0, 1, 1, 1, 0, 0,
@@ -18,7 +17,7 @@ cell_t map0[(width * height)] = {
   0, 0, 0, 0, 0, 0,
 };
 
-cell_t map1[(width * height)] = {
+static cell_t map1[(width * height)] = {
   0, 0, 0, 0, 0, 0,
   0, 1, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0,
@@ -27,14 +26,14 @@ cell_t map1[(width * height)] = {
   0, 0, 0, 0, 0, 0,
 };
 
-void map_copy(cell_t *dest, cell_t *src) {
+static void map_copy(cell_t *dest, cell_t *src) {
   for (size_t i = 0; i < width * height; i++) {
     dest[i] = src[i];
   }
 }
 
-void test_step_0(void) {
-  printf("Testing step = 0... ");
+static void test_step_0(void) {
+  printf("  - Testing step = 0... ");
   map_copy(map, map0);
   start(width, height, map);
   run(0);
@@ -46,8 +45,8 @@ void test_step_0(void) {
   printf("OK.\n");
 }
 
-void test_step_1(void) {
-  printf("Testing step = 1... ");
+static void test_step_1(void) {
+  printf("  - Testing step = 1... ");
   map_copy(map, map0);
   start(width, height, map);
   run(1);
@@ -63,8 +62,8 @@ void test_step_1(void) {
   printf("OK.\n");
 }
 
-void test_step_2(void) {
-  printf("Testing step = 2... ");
+static void test_step_2(void) {
+  printf("  - Testing step = 2... ");
   map_copy(map, map0);
   start(width, height, map);
   run(2);
@@ -74,7 +73,8 @@ void test_step_2(void) {
   printf("OK.\n");
 }
 
-int main() {
+void test_run(void) {
+  printf("Testing run: \n");
   test_step_0();
   test_step_1();
   test_step_2();

@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <assert.h>
+#include "unit_tests.h"
 #include "game_private.h"
 
 #define width 6
 #define height 6
 
-cell_t map[(width * height)] = {
+static cell_t map[(width * height)] = {
   0, 0, 0, 0, 0, 0,
   0, 1, 1, 1, 1, 0,
   0, 1, 1, 1, 0, 0,
@@ -14,9 +15,9 @@ cell_t map[(width * height)] = {
   0, 0, 0, 0, 0, 0,
 };
 
-int main() {
-  start(width, height, map);
+void test_count_neighbours(void) {
   printf("Testing _count_neighbours... ");
+  start(width, height, map);
   assert(_count_neighbours(2, 2) == 8);
   assert(_count_neighbours(2, 3) == 7);
   assert(_count_neighbours(3, 2) == 6);
