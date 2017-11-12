@@ -130,11 +130,11 @@ _prepare_loop_y:
 _prepare_loop_x:
   ;; neighbours_count = _count_neighbours(x, y)
   count_neighbours r12d, r13d
-  mov ecx, eax
+  mov r8d, eax
   map_get r12d, r13d     ; cell_ptr = map_get(x, y)
   cell_state edx, [rax]  ; state = cell_state(*cell_ptr)
-  make_cell ecx, edx     ; new_cell = make_cell(neighbours_count, state)
-  mov [rax], ecx         ; *cell_ptr = new_cell
+  make_cell r8d, edx     ; new_cell = make_cell(neighbours_count, state)
+  mov [rax], r8d         ; *cell_ptr = new_cell
 _prepare_loop_end:
   check_loop r12d, 1, _prepare_loop_x
   check_loop r13d, 1, _prepare_loop_y
@@ -173,8 +173,10 @@ run:
   mov ecx, edi
   jecxz _run_end
 _run_loop:
+  push rcx
   call _prepare_neighbours_map
   call _apply_neighbours_map
+  pop rcx
   loop _run_loop
 _run_end:
   ret
