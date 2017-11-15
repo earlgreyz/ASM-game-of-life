@@ -14,22 +14,18 @@ static cell_t map[(width * height)] = {
 };
 
 static void test_pointers(void) {
-  printf("Testing pointers... ");
   for (size_t y = 1; y < height - 1; y++) {
     for (size_t x = 1; x < width - 1; x++) {
       assert(map_get(map, x, y) == _map_get(x, y));
     }
   }
-  printf("OK.\n");
 }
 
 static void test_values(void) {
-  printf("Testing values... ");
   assert(*_map_get(0, 0) == 0);
   assert(*_map_get(1, 1) == 1);
   assert(*_map_get(2, 1) == 0);
   assert(*_map_get(1, 2) == 1);
-  printf("OK.\n");
 }
 
 void test_map_get(void) {

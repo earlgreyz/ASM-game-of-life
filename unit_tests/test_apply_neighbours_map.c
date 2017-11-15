@@ -41,7 +41,6 @@ static void set_neighbours(size_t x, size_t y) {
 }
 
 void test_apply_neighbours_map(void) {
-  printf("Testing _apply_neighbours_map... ");
   start(width, height, map);
   for (size_t y = 1; y < height - 1; y++) {
     for (size_t x = 1; x < width - 1; x++) {
@@ -50,11 +49,9 @@ void test_apply_neighbours_map(void) {
   }
 
   _apply_neighbours_map();
-
   for (size_t y = 1; y < height - 1; y++) {
     for (size_t x = 1; x < width - 1; x++) {
       assert(*map_get(map, x, y) == *map_get(applied_map, x, y));
     }
   }
-  printf("OK.\n");
 }

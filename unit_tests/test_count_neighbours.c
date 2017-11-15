@@ -16,7 +16,6 @@ static cell_t map[(width * height)] = {
 };
 
 void test_count_neighbours(void) {
-  printf("Testing _count_neighbours... ");
   start(width, height, map);
   assert(_count_neighbours(2, 2) == 8);
   assert(_count_neighbours(2, 3) == 7);
@@ -25,5 +24,4 @@ void test_count_neighbours(void) {
   assert(_count_neighbours(2, 4) == 4);
   assert(_count_neighbours(4, 3) == 3);
   assert(_count_neighbours(4, 4) == 1);
-  printf("OK.\n");
 }

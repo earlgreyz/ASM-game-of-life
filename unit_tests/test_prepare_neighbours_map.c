@@ -25,7 +25,6 @@ static size_t neighbours[(width * height)] = {
 };
 
 void test_prepare_neighbours_map(void) {
-  printf("Testing _prepare_neighbours_map... ");
   start(width, height, map);
   _prepare_neighbours_map();
 
@@ -36,6 +35,4 @@ void test_prepare_neighbours_map(void) {
       assert(neighbours_count == *map_get(neighbours, x, y));
     }
   }
-
-  printf("OK.\n");
 }

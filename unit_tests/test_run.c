@@ -74,8 +74,9 @@ static void test_step_2(void) {
 }
 
 void test_run(void) {
-  printf("Testing run: \n");
+  printf("\n");
   test_step_0();
   test_step_1();
   test_step_2();
+  printf("  - All... ");
 }
