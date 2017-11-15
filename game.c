@@ -15,7 +15,7 @@ cell_t *map;
  * @param width desired map width.
  * @param height desired map height.
  **/
-void initialize_map(size_t width, size_t height) {
+void initialize_map(void) {
   // Increase width and height by 2 to provide "Guardians"
   width += 2;
   height += 2;
@@ -55,9 +55,8 @@ void print_map(void) {
  **/
 void init(void) {
   scanf(" %lu %lu", &width, &height);
-  initialize_map(width, height);
+  initialize_map();
   start(width, height, map);
-  printf("INITIALIZED\n");
 }
 
 /**
