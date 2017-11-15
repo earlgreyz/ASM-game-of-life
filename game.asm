@@ -7,9 +7,11 @@ global _count_neighbours
 global _prepare_neighbours_map
 global _apply_neighbours_map
 
-CELL_SIZE  equ 4    ; Number of bytes in one cell_t
-STATE_MASK equ 0x01 ; Bitmask to get cell state
-ALIVE_COND equ 3    ; Neighbours required for cell to stay alive
+CELL_SIZE   equ 4    ; Number of bytes in one cell_t
+STATE_MASK  equ 0x01 ; Bitmask to get cell state
+REBORN_COND equ 3    ; Neighbours required for dead cell to become alive
+SURVIVE_MIN equ 2    ; Neighbours required for alive cell not to die from loneliness
+SURVIVE_MAX equ 3    ; Neighbours required for alive cell not to die from overcrowding
 
 ;; Extracts cell state from the cell.
 ;; @param destination: register
@@ -147,19 +149,36 @@ _prepare_loop_end:
 ;; * cells with exactly ALIVE_COND neighbours become/remain ALIVE
 ;; * all other cells become DEAD
 _apply_neighbours_map:
-  mov r9d, [height]    ; Initialize y
-  sub r9d, 2           ; y = height - 2
+  mov r9d, [height]     ; Initialize y
+  sub r9d, 2            ; y = height - 2
 _apply_loop_y:
-  mov r8d, [width]     ; Initialize x
-  sub r8d, 2           ; x = width - 2
+  mov r8d, [width]      ; Initialize x
+  sub r8d, 2            ; x = width - 2
 _apply_loop_x:
-  map_get r8d, r9d     ; cell_ptr = map_get(x, y)
-  mov edi, [rax]       ; cell = *cell_ptr
-  cell_neighbours edi  ; neighbours_count = cell_neighbours(cell)
-  xor esi, esi         ; new_state = DEAD
-  cmp edi, ALIVE_COND  ; if (neighbours_count != ALIVE_COND)
-  jne _apply_set_state
-  mov esi, 1           ; new_state = ALIVE
+  map_get r8d, r9d      ; cell_ptr = map_get(x, y)
+  mov edi, [rax]        ; cell = *cell_ptr
+  cell_neighbours edi   ; neighbours_count = cell_neighbours(cell)
+  xor esi, esi          ; new_state = DEAD
+  ;; Calculate new state
+_apply_check:
+  cell_state ecx, [rax] ; if (alive)
+  jecxz _apply_dead    ;   jump apply_alive
+ 
+  ;; Alive cell
+_apply_alive:
+  cmp edi, SURVIVE_MIN
+  jl _apply_set_state
+  cmp edi, SURVIVE_MAX
+  jg _apply_set_state
+  mov esi, 1
+  jmp _apply_set_state
+
+  ;; Dead cell
+_apply_dead:
+  cmp edi, REBORN_COND  ; if (neighbours_count != REBORN_COND)
+  jne _apply_set_state  ;   jump set_state
+  mov esi, 1            ; new_state = ALIVE
+
 _apply_set_state:
   mov [rax], esi       ; *cell_ptr = new_state
 _apply_loop_end:

@@ -19,7 +19,7 @@ static cell_t map0[(width * height)] = {
 
 static cell_t map1[(width * height)] = {
   0, 0, 0, 0, 0, 0,
-  0, 1, 0, 0, 0, 0,
+  0, 1, 0, 0, 1, 0,
   0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 1, 0,
   0, 1, 0, 0, 0, 0,

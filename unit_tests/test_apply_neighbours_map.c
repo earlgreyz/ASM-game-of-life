@@ -26,7 +26,7 @@ static size_t neighbours[(width * height)] = {
 
 static cell_t applied_map[(width * height)] = {
   0, 0, 0, 0, 0, 0,
-  0, 1, 0, 0, 0, 0,
+  0, 1, 0, 0, 1, 0,
   0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 1, 0,
   0, 1, 0, 0, 0, 0,
