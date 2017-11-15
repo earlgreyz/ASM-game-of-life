@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "game.h"
 
-#define DEAD_CELL  ' '
-#define ALIVE_CELL '*'
+#define DEAD_CELL  '.'
+#define ALIVE_CELL '#'
 
 #define map_get(x, y) (map + width * (y) + (x))
 
@@ -19,7 +19,7 @@ void initialize_map(size_t width, size_t height) {
   // Increase width and height by 2 to provide "Guardians"
   width += 2;
   height += 2;
-  map = (cell_t *) calloc(sizeof(cell_t) * width * height);
+  map = (cell_t *) calloc(width * height, sizeof(cell_t));
 
   for (size_t y = 1; y < height - 1; y++) {
     for (size_t x = 1; x < width - 1; x++) {
@@ -30,8 +30,8 @@ void initialize_map(size_t width, size_t height) {
 
 /**
  * Converts cell value to its char representation.
- * ' ' - dead cell
- * '*' - alive cell
+ * '.' - dead cell
+ * '#' - alive cell
  * @returns cell representation.
  **/
 char get_representation(cell_t cell) {

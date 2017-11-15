@@ -1,8 +1,26 @@
+#include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include "unit_tests.h"
 
-bool shall_test_all = true;
+char *test_names[TESTS_COUNT] = {
+  "map_get",
+  "count_neighbours",
+  "prepare_neighbours_map",
+  "apply_neighbours_map",
+  "run",
+};
+
+void (*test_functions[TESTS_COUNT])(void) = {
+  &test_map_get,
+  &test_count_neighbours,
+  &test_prepare_neighbours_map,
+  &test_apply_neighbours_map,
+  &test_run,
+};
+
+
+bool shall_test_all = false;
 
 bool shall_test(char *test_name, int argc, char *argv[]) {
   if (shall_test_all) {
