@@ -123,10 +123,10 @@ _prepare_neighbours_map:
   push r12
   ;; Prepare neighbours map
   mov r13d, [height]    ; Initialize y
-  dec r13d              ; y = height - 1
+  sub r13d, 2           ; y = height - 2
 _prepare_loop_y:
   mov r12d, [width]     ; Initialize x
-  dec r12d              ; x = width - 1
+  sub r12d, 2           ; x = width - 2
 _prepare_loop_x:
   ;; neighbours_count = _count_neighbours(x, y)
   count_neighbours r12d, r13d
@@ -148,10 +148,10 @@ _prepare_loop_end:
 ;; * all other cells become DEAD
 _apply_neighbours_map:
   mov r9d, [height]    ; Initialize y
-  dec r9d              ; y = height - 1
+  sub r9d, 2           ; y = height - 2
 _apply_loop_y:
   mov r8d, [width]     ; Initialize x
-  dec r8d              ; x = width - 1
+  sub r8d, 2           ; x = width - 2
 _apply_loop_x:
   map_get r8d, r9d     ; cell_ptr = map_get(x, y)
   mov edi, [rax]       ; cell = *cell_ptr

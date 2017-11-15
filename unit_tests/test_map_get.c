@@ -16,7 +16,7 @@ static cell_t map[(width * height)] = {
 static void test_pointers(void) {
   for (size_t y = 1; y < height - 1; y++) {
     for (size_t x = 1; x < width - 1; x++) {
-      assert(map_get(map, x, y) == _map_get(x, y));
+      assert(map_get(map, width, x, y) == _map_get(x, y));
     }
   }
 }

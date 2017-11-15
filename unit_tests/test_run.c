@@ -39,7 +39,7 @@ static void test_step_0(void) {
   run(0);
   for (size_t y = 1; y < height - 1; y++) {
     for (size_t x = 1; x < width - 1; x++) {
-      assert(*map_get(map, x, y) == *map_get(map0, x, y));
+      assert(*map_get(map, width, x, y) == *map_get(map0, width, x, y));
     }
   }
   printf("OK.\n");
@@ -52,7 +52,7 @@ static void test_step_1(void) {
   run(1);
   for (size_t y = 1; y < height - 1; y++) {
     for (size_t x = 1; x < width - 1; x++) {
-      assert(*map_get(map, x, y) == *map_get(map1, x, y));
+      assert(*map_get(map, width, x, y) == *map_get(map1, width, x, y));
     }
   }
   run(1);

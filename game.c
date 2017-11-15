@@ -57,6 +57,7 @@ void init(void) {
   scanf(" %lu %lu", &width, &height);
   initialize_map(width, height);
   start(width, height, map);
+  printf("INITIALIZED\n");
 }
 
 /**
