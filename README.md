@@ -25,4 +25,4 @@ Dokładna postać wewnętrzna tablicy `T` nie jest określona, powinno być jedn
 __Rozwiązania nie zawierające pliku Makefile nie będą sprawdzane.__
 
 ## Oddawanie rozwiązań
-Rozwiązania (procedury w asemblerze i program w C wraz z przykładowymi testami) należy wysłać do dnia 23 listopada (23:59) pocztą na zbyszek@mimuw.edu.pl jako pojedynczy załącznik -- archiwum o nazwie wskazującej na autora (np. ab123456-zad1.tgz), spakowane z osobnego katalogu o tej samej nazwie (ale bez tgz). Program ma działać w środowisku zainstalowanym w laboratoriach w trybie 64-bitowym.
+Rozwiązania (procedury w asemblerze i program w C wraz z przykładowymi testami) należy wysłać do dnia __23 listopada (23:59)__ pocztą na [zbyszek@mimuw.edu.pl](mailto:zbyszek@mimuw.edu.pl) jako pojedynczy załącznik -- archiwum o nazwie wskazującej na autora _(np. ab123456-zad1.tgz)_, spakowane z osobnego katalogu o tej samej nazwie (ale bez tgz). Program ma działać w środowisku zainstalowanym w laboratoriach __w trybie 64-bitowym__.
