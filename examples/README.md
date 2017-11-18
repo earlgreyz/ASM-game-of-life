@@ -9,3 +9,6 @@ $ cat examples/example.in - | ./game
 
 ## Oscilators
 * Toad
+
+## Spaceships
+* Glider
